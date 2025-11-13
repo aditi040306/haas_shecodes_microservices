@@ -1,15 +1,12 @@
 # services/projectmgmt/app.py
 import os
-from flask import Flask, request, jsonify, send_from_directory
+from flask import Flask, request, jsonify
 from flask_cors import CORS
 
 from db import get_projects_collection
 
-app = Flask(
-    __name__,
-    static_folder="client",   # later we'll drop React build here
-    static_url_path="/"
-)
+# API-only Flask app
+app = Flask(__name__)
 CORS(app)
 
 # ----------------------------------------------------
@@ -114,24 +111,6 @@ def get_project_route():
 @app.post("/shecodes/projects/addUserProject")
 def add_user_route():
     return handle_add_user(request)
-
-# ----------------------------------------------------
-# Serve React (later)
-# ----------------------------------------------------
-@app.route("/", defaults={"path": ""})
-@app.route("/<path:path>")
-def serve_react(path):
-    # if we later add frontend/build → /client
-    if path and os.path.exists(os.path.join(app.static_folder, path)):
-        return send_from_directory(app.static_folder, path)
-
-    index_path = os.path.join(app.static_folder, "index.html")
-    if os.path.exists(index_path):
-        return send_from_directory(app.static_folder, "index.html")
-
-    # fallback: backend-only message
-    return jsonify({"message": "Project Management service running"}), 200
-
 
 if __name__ == "__main__":
     # different port from usermgmt
