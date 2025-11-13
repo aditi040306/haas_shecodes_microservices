@@ -1,0 +1,51 @@
+name: haas_shecodes_microservices
+
+services:
+  usermgmt:
+    image: aditiv0401/shecodes-usermgmt:final
+    container_name: usermgmt
+    env_file:
+      - ./services/usermgmt/.env
+    ports:
+      - "8001:8001"
+    restart: unless-stopped
+
+  projectmgmt:
+    image: aditiv0401/shecodes-projectmgmt:final
+    container_name: projectmgmt
+    env_file:
+      - ./services/projectmgmt/.env
+    ports:
+      - "8002:8002"
+    restart: unless-stopped
+
+  inventorymgmt:
+    image: aditiv0401/shecodes-inventorymgmt:final
+    container_name: inventorymgmt
+    env_file:
+      - ./services/inventorymgmt/.env
+    ports:
+      - "8003:8003"
+    restart: unless-stopped
+
+  webui:
+    image: aditiv0401/shecodes-webui:final
+    container_name: webui
+    environment:
+      REACT_APP_USER_URL: "http://localhost:8001/shecodes"
+      REACT_APP_PROJECT_URL: "http://localhost:8002/shecodes/projects"
+      REACT_APP_INVENTORY_URL: "http://localhost:8003/shecodes/inventory"
+    ports:
+      - "3000:80"
+    depends_on:
+      usermgmt:
+        condition: service_started
+      projectmgmt:
+        condition: service_started
+      inventorymgmt:
+        condition: service_started
+    restart: unless-stopped
+
+networks:
+  default:
+    name: haas_shecodes_microservices_default

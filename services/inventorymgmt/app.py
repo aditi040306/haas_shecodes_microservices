@@ -1,10 +1,9 @@
-from flask import Flask, request, jsonify, send_from_directory
+from flask import Flask, request, jsonify
 from flask_cors import CORS
-from pathlib import Path
 from db import get_db
 
-# serve React from /app/client
-app = Flask(__name__, static_folder="client", static_url_path="")
+# API-only Flask app
+app = Flask(__name__)
 CORS(app, resources={r"/shecodes/*": {"origins": "*"}})
 
 # fixed order so UI = backend
@@ -12,19 +11,6 @@ HARDWARE_INDEX_MAP = {
     "hw1": 0,
     "hw2": 1,
 }
-
-# ---------- UI ROUTES (same style as other services) ----------
-@app.route("/", defaults={"path": ""})
-@app.route("/<path:path>")
-def serve_react(path):
-    client_dir = Path(app.static_folder)
-    file_path = client_dir / path
-    if path and file_path.exists():
-        return send_from_directory(client_dir, path)
-    # fallback to index.html for React routes
-    return send_from_directory(client_dir, "index.html")
-# --------------------------------------------------------------
-
 
 @app.get("/shecodes/inventory/projectstatus")
 def get_project_status():

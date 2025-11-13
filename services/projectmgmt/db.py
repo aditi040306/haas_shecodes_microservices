@@ -6,19 +6,19 @@ from dotenv import load_dotenv
 from pymongo import MongoClient
 import certifi
 
-# 1) try: running from source (your VS Code layout)
+
 this_file = Path(__file__).resolve()
 
-# default: look 2 levels up (source layout: shecodes-microservices/.env)
+
 possible_root = this_file.parents[2] if len(this_file.parents) >= 3 else this_file.parent
 
 env_path = possible_root / ".env"
 
-# 2) if that doesn't exist (Docker case: /app/.env), fall back
+
 if not env_path.exists():
     env_path = Path("/app/.env")
 
-# load it
+# load 
 load_dotenv(dotenv_path=env_path)
 
 MONGO_URI = os.getenv("MONGO_URI")

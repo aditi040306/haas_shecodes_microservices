@@ -1,6 +1,6 @@
 import os
 import bcrypt
-from flask import Flask, request, jsonify, session, send_from_directory
+from flask import Flask, request, jsonify, session
 from flask_cors import CORS
 from dotenv import load_dotenv
 from pymongo import MongoClient
@@ -16,12 +16,8 @@ if not MONGO_URI:
 client = MongoClient(MONGO_URI, tlsCAFile=certifi.where())
 users_col = client["Users"]["Users"]
 
-# 2) Flask app, with React build folder
-app = Flask(
-    __name__,
-    static_folder="client",   # React build will be copied here
-    static_url_path="/"
-)
+# 2) Flask app (API only)
+app = Flask(__name__)
 CORS(app)
 app.secret_key = os.getenv("SECRET_KEY", "dev-secret")
 
@@ -40,7 +36,7 @@ def create_user(username: str, plain_password: str):
 
 def password_matches(stored: str, provided: str) -> bool:
     if not stored:
-      return False
+        return False
     # bcrypt hash
     if stored.startswith("$2b$") or stored.startswith("$2a$"):
         return bcrypt.checkpw(provided.encode("utf-8"), stored.encode("utf-8"))
@@ -92,27 +88,12 @@ def signup_route():
 def login_route():
     return handle_login(request)
 
-# optional – for other services
 @app.get("/shecodes/users/<username>")
 def get_user(username):
     user = find_user_by_username(username)
     if not user:
         return jsonify({"message": "User not found"}), 404
     return jsonify({"userid": user["userid"]}), 200
-
-# -------------------------------------------------
-# React routes (serve UI)
-# -------------------------------------------------
-@app.route("/", defaults={"path": ""})
-@app.route("/<path:path>")
-def serve_react(path):
-    # if actual file exists (e.g. /static/js/main.js), serve it
-    full_path = os.path.join(app.static_folder, path)
-    if path != "" and os.path.exists(full_path):
-        return send_from_directory(app.static_folder, path)
-    # otherwise serve index.html
-    return send_from_directory(app.static_folder, "index.html")
-
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=8001, debug=True)
