@@ -12,6 +12,7 @@ import AboutComponent from './components/AboutComponent';
 import ProjectComponent from './components/ProjectComponent';
 import ResourceComponent from './components/ResourceComponent';
 import AddUserToProject from './components/AddUserToProject';
+import Microservice4 from './components/Microservice4';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 
@@ -27,6 +28,7 @@ function MainApp() {
           <Route path="project" element={<ProjectComponent/>} />
           <Route path="adduser" element={<AddUserToProject/>} />
           <Route path="resource" element={<ResourceComponent/>} />
+          <Route path="ms4" element={<Microservice4/>}/>
         </Route>
       </Routes>
     </BrowserRouter>
