@@ -1,6 +1,3 @@
-Here’s a cleaned-up `README.md` you can drop straight into GitHub.
-I’ve kept all your steps, just organized + formatted, and I’ve **replaced real secrets with placeholders** (don’t commit real URIs/keys!).
-
 ````markdown
 # Hardware Resource Management Portal – SheCodes-Hub
 
@@ -347,5 +344,5 @@ Open in browser:
 docker stop webui inventorymgmt projectmgmt usermgmt
 ```
 
----
+
 
