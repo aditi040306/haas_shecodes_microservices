@@ -31,6 +31,7 @@ const NavBar = ({ isLoggedIn, setIsLoggedIn }) => {
                 <Nav.Link as={NavLink} to="/project" end>Project</Nav.Link>
                 <Nav.Link as={NavLink} to="/adduser" end>Add User</Nav.Link>
                 <Nav.Link as={NavLink} to="/resource" end>Resource</Nav.Link>
+                <Nav.Link as={NavLink} to="/analysis" end>Analysis</Nav.Link>
                 <Nav.Link as={NavLink} to="/about" onClick={handleLogout} end>
                   Sign Out
                 </Nav.Link>
