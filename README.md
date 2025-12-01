@@ -3,6 +3,7 @@
 
 Microservices-based Hardware-as-a-Service (HaaS) portal with:
 - **Backend:** Python Flask + MongoDB Atlas (3 services – user, project, inventory)
+- **Analytics:** 1 external microservice (Dewey API) hosted on Azure App Service
 - **Frontend:** React (portal UI)
 - **Deployment:** Docker images + Docker Compose
 
@@ -12,7 +13,7 @@ Microservices-based Hardware-as-a-Service (HaaS) portal with:
 
 ```bash
 repo-root/
-├── backend/                 # (older single-service starter – optional)
+├── backend/                 # (older monolithic structure)
 │   ├── app.py
 │   ├── .env
 │   ├── requirements.txt
@@ -26,7 +27,7 @@ repo-root/
 │       └── controllers/
 │           └── auth_controller.py
 │
-├── services/                # Final microservices
+├── services/                # Final microservices (Dockerized)
 │   ├── usermgmt/
 │   │   ├── Dockerfile
 │   │   ├── app.py
@@ -43,17 +44,21 @@ repo-root/
 ├── frontend/
 │   └── portal-ui/           # React app (web UI)
 │       ├── package.json
-│       └── src/…
+│       └── src/
+│           └── components/
+│               └── AnalysisDewey.jsx  # Integrates with external Dewey analytics API
 │
 ├── docker-compose.yml
 └── README.md
 ````
 
+> **Note:** The 4th microservice (Dewey analytics API) is hosted separately on Azure App Service and is **not** part of this repo’s Docker Compose stack. The frontend consumes it via HTTP in `AnalysisDewey.jsx`.
+
 ---
 
 ## 2. (Legacy) Local Flask Setup – Single `backend/` App
 
-> This was the original monolithic setup – still useful for learning, but the final project uses the microservices in `services/`.
+> This was the original monolithic setup – which is updated now as the final project uses the microservices in `services/`.
 
 ### 2.1. Create folder structure
 
@@ -344,5 +349,75 @@ Open in browser:
 docker stop webui inventorymgmt projectmgmt usermgmt
 ```
 
+---
+
+## 9. External Analytics Microservice (Dewey API on Azure)
+
+The “Industry Metrics / Analysis” screen in the UI is powered by a **4th microservice** hosted separately on Azure App Service.
+
+* **Base URL:** defined in `AnalysisDewey.jsx` as:
+
+  ```js
+  const MS4_URL =
+    'https://shecodes-dewey-api-gmfpbtgxb4cmbkgg.canadacentral-01.azurewebsites.net';
+  ```
+
+* **Key endpoints:**
+
+  * `GET /industries`
+    Returns a JSON list of available industries, e.g.:
+
+    ```json
+    {
+      "status": "success",
+      "industries": ["Insurance", "Retail", "Banking", "..."]
+    }
+    ```
+
+  * `POST /compute`
+    Accepts a payload like:
+
+    ```json
+    {
+      "industry": "Insurance",
+      "start_date": "2025-01-03",
+      "end_date": "2025-01-10",
+      "metric": "max"
+    }
+    ```
+
+    and responds with:
+
+    ```json
+    {
+      "status": "success",
+      "industry": "Insurance",
+      "metric": "max",
+      "start_date": "2025-01-03",
+      "end_date": "2025-01-10",
+      "record_count": 1234,
+      "result": 98765.43
+    }
+    ```
+
+* **Frontend integration:**
+
+  * Implemented in `frontend/portal-ui/src/components/AnalysisDewey.jsx`.
+  * The component:
+
+    * Fetches industries from `GET /industries`.
+    * Sends the selected industry + date range + metric to `POST /compute`.
+    * Renders:
+
+      * Record count
+      * Numeric result
+      * A natural-language sentence such as:
+
+        > For the period between 01/03/2025 and 01/10/2025, the maximum spend amount for the Insurance industry is 98,765.43.
+
+* **Ownership & deployment:**
+
+  * This Dewey analytics API is maintained by a separate team member and deployed via **Azure App Service**, not through this repo’s Docker Compose.
+  * If the base URL changes, update the `MS4_URL` constant in `AnalysisDewey.jsx` and ensure CORS is correctly configured on the Azure app to allow `http://localhost:3000` (and any deployed frontend origin).
 
 
