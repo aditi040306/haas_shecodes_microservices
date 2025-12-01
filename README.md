@@ -13,7 +13,7 @@ Microservices-based Hardware-as-a-Service (HaaS) portal with:
 
 ```bash
 repo-root/
-├── backend/                 # (older single-service starter – optional)
+├── backend/                 # (older monolithic structure)
 │   ├── app.py
 │   ├── .env
 │   ├── requirements.txt
@@ -58,7 +58,7 @@ repo-root/
 
 ## 2. (Legacy) Local Flask Setup – Single `backend/` App
 
-> This was the original monolithic setup – still useful for learning, but the final project uses the microservices in `services/`.
+> This was the original monolithic setup – which is updated now as the final project uses the microservices in `services/`.
 
 ### 2.1. Create folder structure
 
@@ -420,8 +420,4 @@ The “Industry Metrics / Analysis” screen in the UI is powered by a **4th mic
   * This Dewey analytics API is maintained by a separate team member and deployed via **Azure App Service**, not through this repo’s Docker Compose.
   * If the base URL changes, update the `MS4_URL` constant in `AnalysisDewey.jsx` and ensure CORS is correctly configured on the Azure app to allow `http://localhost:3000` (and any deployed frontend origin).
 
----
 
-```
-::contentReference[oaicite:0]{index=0}
-```
