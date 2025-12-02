@@ -43,15 +43,22 @@ function ProjectComponent() {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+
+      const trimmedUser = initialUserId.trim();
+      if (!trimmedUser) {
+      showError("User ID is required for project creation.");
+      return;
+      }
+
     try {
       // Build payload; include userid only if provided
+      const trimmedUser = initialUserId.trim();
       const payload = {
         projectid: formData.projectid,
         projectname: formData.projectname,
         description: formData.description,
+        userid: trimmedUser,  // NEW
       };
-      const trimmedUser = initialUserId.trim();
-      if (trimmedUser) payload.userid = trimmedUser;   // backend will auto-add
 
       // Single call: /shecodes/projects/createproject
       const { ok, data } = await postToEndpoint("createproject", payload, PROJECT_BASE);
@@ -105,7 +112,7 @@ function ProjectComponent() {
           />
         </div>
 
-        {/* Optional user to add on creation */}
+        {/*  */}
         <div style={{ display: "flex", alignItems: "center", marginBottom: "10px" }}>
           <label style={{ width: "100px" }}>User ID</label>
           <input
@@ -113,6 +120,7 @@ function ProjectComponent() {
             name="initialUserId"
             value={initialUserId}
             onChange={(e) => setInitialUserId(e.target.value)}
+            required
             
           />
         </div>

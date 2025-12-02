@@ -18,17 +18,20 @@ def get_project_by_id(projectid: str):
 
 def create_project(projectid: str, projectname: str, description: str, created_by: str | None = None):
     projects = get_projects_collection()
+
+    # NEW 
+    authorized_users = []
+    if created_by:
+        authorized_users.append(created_by)
+
     doc = {
         "projectid": projectid,
         "projectname": projectname,
         "description": description,
+        
         # important field you wanted
-        "authorized_users": []
+        "authorized_users": authorized_users,  #NEW
     }
-    # if caller sent userid, auto-add to authorized_users
-    if created_by:
-        doc["authorized_users"].append(created_by)
-
     projects.insert_one(doc)
 
 def add_authorized_user(projectid: str, userid: str):
@@ -50,8 +53,8 @@ def handle_create_project(req):
     # optional, so your frontend can send the logged-in user
     userid = data.get("userid")   # e.g. "user1"
 
-    if not projectid or not projectname or not description:
-        return jsonify({"message": "projectid, projectname, description are required"}), 400
+    if not projectid or not projectname or not description or not userid:
+        return jsonify({"message": "projectid, projectname, description and userid are required"}), 400
 
     if get_project_by_id(projectid):
         return jsonify({"message": "Project Id already exists"}), 400
