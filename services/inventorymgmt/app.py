@@ -15,7 +15,7 @@ HARDWARE_INDEX_MAP = {
 @app.get("/shecodes/inventory/projectstatus")
 def get_project_status():
     project_id = request.args.get("projectid")
-    userid = request.args.get("userid")   # ✅ NEW
+    userid = request.args.get("userid")   #  NEW
     if not project_id:
         return jsonify({"message": "projectid is required"}), 400
 
@@ -66,13 +66,13 @@ def checkin_checkout():
     project_id = data.get("projectid")
     action = data.get("action")
     items = data.get("inventory", [])
-    userid = data.get("userid")  # ✅ NEW
+    userid = data.get("userid")  #  NEW
 
     if not project_id or not action or not items:
         return jsonify({"message": "projectid, action and inventory are required"}), 400
     
     if not userid:
-        return jsonify({"message": "userid is required"}), 400  # ✅ NEW
+        return jsonify({"message": "userid is required"}), 400  #  NEW
 
     if action not in ("checkin", "checkout"):
         return jsonify({"message": "action must be 'checkin' or 'checkout'"}), 400
@@ -84,7 +84,7 @@ def checkin_checkout():
     if not project:
         return jsonify({"message": "Project not found"}), 404
     
-    # ✅ NEW: authorization check – only project members can check in/out
+    # NEW: authorization check – only project members can check in/out
     authorized_users = project.get("authorized_users")
     if authorized_users is None:
         authorized_users = project.get("users", [])

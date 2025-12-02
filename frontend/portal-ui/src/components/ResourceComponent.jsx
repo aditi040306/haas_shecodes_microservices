@@ -38,7 +38,7 @@ const ResourceComponent = () => {
   const getProjectDetails = async (event) => {
     event.preventDefault();
 
-    // ✅ NEW: safety check – if somehow no user in storage
+    //  NEW: safety check – if somehow no user in storage
     if (!userId) {
       showError("Error: No logged-in user id found. Please log in again.");
       return;
@@ -51,7 +51,7 @@ const ResourceComponent = () => {
       const { ok, data } = await getFromEndpoint(
         "projectstatus",
         { projectid: projectForm.projectid,
-          userid: userId,      // ✅ NEW: send userid as query param
+          userid: userId,      //  NEW: send userid as query param
          },
         INVENTORY_BASE                 // <—— minimal change
       );
@@ -95,7 +95,7 @@ const ResourceComponent = () => {
 
   const handleCheckInCheckOut = async (action) => {
 
-     // ✅ NEW: same guard for check-in/check-out
+     //  NEW: same guard for check-in/check-out
     if (!userId) {
       showError("Error: No logged-in user id found. Please log in again.");
       return;
@@ -146,7 +146,7 @@ const ResourceComponent = () => {
           projectid: projectForm.projectid,
           inventory: inventoryPayload,
           action: action,
-          userid: userId,      // ✅ NEW: send userid in JSON body
+          userid: userId,      //  NEW: send userid in JSON body
         },
         INVENTORY_BASE                 // <—— minimal change
       );
