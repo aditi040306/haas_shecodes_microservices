@@ -200,7 +200,7 @@ The “Industry Metrics / Analysis” screen in the UI is powered by a **4th mic
 
 * **Key endpoints:**
 
-  * `GET /industries`
+  * ` /industries`
     Returns a JSON list of available industries, e.g.:
 
     ```json
@@ -210,7 +210,7 @@ The “Industry Metrics / Analysis” screen in the UI is powered by a **4th mic
     }
     ```
 
-  * `POST /compute`
+  * ` /compute`
     Accepts a payload like:
 
     ```json
@@ -312,7 +312,7 @@ docker buildx create --use --name multi || true
 
 ### 8.3. Build & push images (linux/amd64 + linux/arm64)
 
-> Adjust paths if your Dockerfiles move.
+> Adjust paths if Dockerfiles move.
 
 ```bash
 # usermgmt
