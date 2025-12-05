@@ -43,6 +43,9 @@ function LoginComponent() {
       if (ok) {
         showSuccess(`Success: ${data.message}`);
         setIsLoggedIn(true);
+
+        // NEW: User Id Validation : remember which user is logged in
+        localStorage.setItem("userid", formData.userid.trim());
         navigate('/resource');
       } else {
         showError(`Error: ${data.message || 'Unknown error'}`);
